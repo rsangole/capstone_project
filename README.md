@@ -7,4 +7,5 @@
 * **images** : Holds images from EDA and modeling activities
 * **src** : Holds all the scripts for EDA, plotting, modeling and dashboarding. Does not hold scripts for converting data from `raw` to `processed` state. These scripts reside in `munge`.
 * **kaggle_original_data** : Holds data and scripts pulled from the West Nile Virus Kaggle competition.
-* **reports** : holds markdown, jupyter notebooks, dashboards and PDF reports created throughout the project
+* **docs** : Holds literature research and other project related information
+* **reports** : Holds markdown, jupyter notebooks, dashboards and PDF reports created throughout the project
