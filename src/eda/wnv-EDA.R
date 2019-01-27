@@ -77,12 +77,26 @@ cowplot::plot_grid(p_YR, p_WEEK, ncol = 1)
 
 # ---- SPECIES and TS PLOT
 df %>%
+    group_by(YR_WK, SPECIES, RESULT) %>%
+    dplyr::summarize(avg_mos = mean(NUMBER.OF.MOSQUITOES)) %>%
     ggplot()+
-    geom_point(aes(YR_WK, NUMBER.OF.MOSQUITOES,color=RESULT),alpha = 0.6)+
+    geom_point(aes(YR_WK, avg_mos,color=forcats::fct_rev(RESULT)),alpha = 0.6)+
     facet_wrap(~SPECIES,ncol = 3)+
     scale_x_datetime(date_breaks = "year",date_labels = "%Y")+
     scale_color_discrete(name="West Nile Detected")+
-    labs(y="Number of mosquitoes tested",x="")+
+    labs(y="Average number of mosquitoes tested",x="")+
     theme(legend.position = "top",
           axis.text.x = element_text(angle = 90, hjust = 1))
-
+df %>%
+    group_by(SEASON.YEAR, SPECIES, RESULT) %>%
+    dplyr::summarize(avg_mos = mean(NUMBER.OF.MOSQUITOES), sd_mos = sd(NUMBER.OF.MOSQUITOES)) %>%
+    ggplot(aes(SEASON.YEAR, avg_mos,color=forcats::fct_rev(RESULT)))+
+    geom_point()+
+    geom_line()+
+    geom_ribbon(aes(ymax=avg_mos+sd_mos,ymin=avg_mos-sd_mos),alpha=0.2,linetype=0)+
+    facet_wrap(~SPECIES,ncol = 3)+
+    scale_x_continuous(breaks = seq(2007,2018))+
+    scale_color_discrete(name="West Nile Detected")+
+    labs(y="Average number of mosquitoes tested",x="")+
+    theme(legend.position = "top",
+          axis.text.x = element_text(angle = 90, hjust = 1))
