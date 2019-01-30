@@ -1,0 +1,94 @@
+"CFNAME","CFTYPE","CFSUBTYPE","ADDRESS","GNISCODE","COMMENT","SOURCE","Jurisdicti","Community","MERGEID","POINT_X","POINT_Y"
+"Advocate Christ Medical Center","Hospital","Hospital","9340 S Kostner Ave",426825,,"CGI",,"Oak Lawn","11216",1148289.7915,1841934.22025
+"Palos Primary Care Center","Hospital","Hospital","15300 West Ave",2036658,,"CL",,"Orland Park","11376",1112171.47925,1801018.463
+"Oak Forest Hospital","Hospital","Hospital","15901 Cicero Ave",414760,,"CEGL",,"Bremen Twp","11469",1148861.5795,1797286.149
+"Gottlieb Memorial Hospital","Hospital","Hospital","375 W North Ave",409212,,"BCEG",,"Melrose Park","12387",1117588.3475,1910458.65675
+"Glenbrook Hospital","Hospital","Hospital","2100 Pfingsten Rd",2033578,,"CEGI",,"Glenview","12751",1114997.3155,1976713.35875
+"Cermak Hospital","Hospital","Hospital","2739 S Sacramento Ave",2673936,,"CEG",,"Chicago","14874",1157406.57225,1885472.11
+"Hartgrove Hospital","Hospital","Hospital","5720 W Roosevelt Rd",1832957,,"C",,"Chicago","15116",1138396.85325,1894456.2095
+"Sacred Heart Hospital","Hospital","Hospital","3238 W Franklin Blvd",1826901,,"C",,"Chicago","15378",1154451.11675,1903351.87825
+"Saint Mary Of Nazareth Hospital","Hospital","Hospital","2233 W Division St",417534,,"BCG",,"Chicago","16023",1161197.087,1907603.377
+"Saint Elizabeth's Hospital","Hospital","Hospital","1432 N Oakley Blvd",417267,,"BCGE",,"Chicago","16025",1160643.124,1909529.15675
+"Advocate Illinois Masonic Medical Center","Hospital","Hospital","831 W Nelson St",1830635,,"BCEG",,"Chicago","16268",1169728.736,1920398.0935
+"Kindred Chicago Central Hospital","Hospital","Hospital","4058 W Melrose St",404152,,"CE",,"Chicago","16325",1148698.721,1921391.66675
+"Shriners Hospitals for Children","Hospital","Hospital","2211 N Oak Park Ave",1764375,,"CEG",,"Chicago","16492",1131253.379,1913894.4905
+"Holy Cross Hospital","Hospital","Hospital","6801 S California Ave",410435,,"BCGE",,"Chicago","16718",1159144.43225,1859109.65025
+"La Rabida Children's Hospital","Hospital","Hospital","6501 S Promontory Dr",1831256,,"BCGI",,"Chicago","18601",1190151.93275,1862105.5285
+"Adventist La Grange Memorial Hospital","Hospital","Hospital","5101 WILLOW SPRINGS RD",1831302,,"BCEGI",,"La Grange","19316",1106245.4655,1868755.6035
+"Rush Medical Loyola Specialty Hospital","Hospital","Hospital","5601 S COUNTY LINE RD",1836836,,"CG",,"Hinsdale","19359",1098195.27375,1864986.22775
+"Mercy Medical Center","Hospital","Hospital","9050 W 81ST ST",1737227,,"C",,"Justice","19448",1116955.444,1849598.23625
+"University of Illinois at Chicago Hospital","Hospital","Hospital","1740 W Taylor Ave",2662346,"Additional GNIS Codes.","CEGH",,"Chicago","19573",1164474.05375,1896045.65175
+"Mercy Hospital and Medical Center","Hospital","Hospital","2525 S Michigan Ave",413417,,"BCEG",,"Chicago","19592",1178093.178,1887485.5425
+"Saint James Hospital","Hospital","Hospital","20201 Crawford Ave",426793,,"CEGI",,"Olympia Fields","19620",1154740.27975,1769213.162
+"Core Center Ruth M. Rothstein","Hospital","Hospital","2030 W Harrison St",0,,"EG",,"Chicago","19674",1162796.88875,1897531.0525
+"Jesse Brown Veterans Medical Center","Hospital","Hospital","820 S Damen Ave",2662362,,"CEGI",,"Chicago","19683",1162550.1675,1895828.2865
+"University of Illinois at Chicago College of Medicine - School of Public Health West","Hospital","Hospital","2121 W Taylor St",0,,"GH",,"Chicago","19697",1162406.97625,1895341.44975
+"John H Stroger Junior Hospital Cook County","Hospital","Hospital","1901 W Harrison St",1826093,,"CEG",,"Chicago","19783",1163950.41625,1896984.386
+"Mount Sinai Hospital","Hospital","Hospital","1500 S California Ave",2662326,"Additional GNIS code of 414081.","BCEG",,"Chicago","19819",1158298.469,1892547.68125
+"Saint Anthony Hospital","Hospital","Hospital","2875 W 19th St",417172,,"BCEG",,"Chicago","19895",1157440.7635,1890455.83575
+"Advocate Bethany Hospital","Hospital","Hospital","3435 West Van Buren St",404257,"Additional GNIS code of 1826372.","CEG",,"Chicago","19953",1153422.1515,1897803.53725
+"PCC Austin Family Health Center","Hospital","Hospital","5425 W Lake St",0,,"G",,"Chicago","19959",1140027.81575,1901923.41275
+"Westown Neighborhood Health Center","Hospital","Hospital","2418 W Division St",0,,"GI",,"Chicago","19980",1160037.105,1908090.878
+"Norwegian American Hospital Incorporated","Hospital","Hospital","1052 N Mozart St",1831552,,"BCEG",,"Chicago","20086",1156795.37,1907070.18025
+"Loretto Hospital","Hospital","Hospital","645 S Central Ave",2662328,,"CEG",,"Chicago","20095",1139432.28125,1896461.38475
+"Chicago Kindred Hospital Northlake","Hospital","Hospital","365 E North Ave",2662337,,"CE",,"Northlake","20409",1104827.9845,1908935.5055
+"Englewood Health Center","Hospital","Hospital","641 W 63rd St",0,,"GI",,"Chicago","20438",1172862.1275,1862938.4015
+"Saint Bernard Hospital","Hospital","Hospital","326 W 64th St",2662320,,"BCEG",,"Chicago","20446",1175296.8435,1862750.86
+"Englewood Health Center","Hospital","Hospital","1135 W 69th St",0,,"EG",,"Chicago","20478",1169832.56425,1858952.0545
+"Jackson Park Hospital and Medical Center","Hospital","Hospital","7531 S Stony Island Ave",411002,"Additional GNIS code of 1737734.","BCEG",,"Chicago","20568",1188400.585,1855216.2025
+"South Shore Hospital","Hospital","Hospital","8012 S Crandon Ave",418835,,"BCEG",,"Chicago","20717",1192770.2575,1852081.31925
+"Roseland Community Hospital","Hospital","Hospital","45 W 111th St",426653,,"BCEG",,"Chicago","20804",1177582.68825,1831257.354
+"Saint Francis Hospital Metro South Medical Center","Hospital","Hospital","12935 Gregory St",426914,,"CEGL",,"Blue Island","21314",1163477.8845,1818715.74625
+"University of Chicago Medical Center","Hospital","Hospital","5841 S Maryland Ave",2662357,,"BCEG",,"Chicago","21531",1183240.9895,1866411.65375
+"Provident Hospital of Cook County","Hospital","Hospital","500 E 51St St",416264,,"CEG",,"Chicago","21584",1180484.74,1871576.8295
+"Near South Health Center","Hospital","Hospital","3525 S Michigan Ave",0,,"EG",,"Chicago","21721",1177891.102,1881527.38825
+"Rush University Medical Center","Hospital","Hospital","1653 W Congress Pkwy",2662344,"Additional GNIS codes of 1832934 and 1832936 and 1832935.","ABCEG",,"Chicago","21759",1165133.71725,1897203.9755
+"Pilsen Community Health Center","Hospital","Hospital","1707 S Ashland Ave",0,,"GI",,"Chicago","21795",1166127.17725,1891677.79875
+"Little Company of Mary Hospital and Health Care Center","Hospital","Hospital","2800 W 95th St",426839,,"BCEGI",,"Evergreen Park","22070",1159017.70725,1841922.6005
+"Edward Hines Junior Veterans Affairs Hospital","Hospital","Hospital","2100 5th Ave",1832991,,"CG",,"Proviso Twp","22097",1118851.7805,1891105.532
+"Loyola Medical Center","Hospital","Hospital","2160 1st Ave",2026474,,"BCEG",,"Proviso Twp","22099",1119952.51975,1891282.23375
+"River Edge Hospital","Hospital","Hospital","8311 W Roosevelt Rd",1832867,,"CE",,"Forest Park","22124",1121821.86875,1893927.83675
+"Rush Oak Park Hospital","Hospital","Hospital","520 S Maple Ave",414843,,"BCEG",,"Oak Park","22140",1128730.383,1898878.45075
+"Thorek Hospital and Medical Center","Hospital","Hospital","850 W Irving Park Rd",1836922,,"CEG",,"Chicago","22159",1169443.90475,1926922.7805
+"Bethany Hospital","Hospital","Hospital","5025 N Paulina St",404258,,"CEG",,"Chicago","22181",1164551.07725,1933348.27425
+"Swedish Covenant Hospital","Hospital","Hospital","5145 N California Ave",1836858,,"BCG",,"Chicago","22187",1156621.55225,1934112.5015
+"West Suburban Hospital","Hospital","Hospital","3 Erie Ct",1772679,,"BCEG",,"Oak Park","22271",1135918.90425,1903435.992
+"Westlake Community Hospital","Hospital","Hospital","1225 W Lake St",1837200,,"CEGI",,"Melrose Park","22419",1116032.54325,1903903.19325
+"Alexian Brothers Medical Center","Hospital","Hospital","800 Biesterfield Rd",1825706,,"BCEGI",,"Elk Grove Village","22527",1070442.02475,1944532.265
+"Skokie Hospital","Hospital","Hospital","9701 Knox Ave",418585,,"BCGEI",,"Skokie","22877",1144983.57075,1963803.503
+"Saint Francis Hospital Of Evanston","Hospital","Hospital","800 Austin St",417285,,"BCEGI",,"Evanston","22904",1160829.14,1952191.06825
+"Evanston Hospital","Hospital","Hospital","2650 Ridge Ave",408103,,"CEG",,"Evanston","23171",1160480.43475,1967258.41425
+"Lutheran General Hospital","Hospital","Hospital","1999 Dempster St",2662324,,"CEGI",,"Park Ridge","23211",1115960.62375,1956967.28875
+"Holy Family Medical Center","Hospital","Hospital","150 N Des Plaines River Rd",410441,,"BCEGI",,"Des Plaines","23422",1104310.6085,1963234.838
+"Northwest Community Hospital","Hospital","Hospital","901 W Kirchhoff Rd",414704,,"BCEGI",,"Arlington Heights","23438",1076681.14975,1967656.13575
+"Saint Alexius Medical Center","Hospital","Hospital","1555 N Barrington Rd",2033579,,"BCEGI",,"Hoffman Estates","23726",1036323.08875,1962438.91625
+"Northwestern University Rehabilitation Institute of Chicago","Hospital","Hospital","345 E Superior St",1832823,,"BCEG",,"Chicago","23978",1178830.299,1905452.1255
+"Northwestern Memorial Hospital","Hospital","Hospital","201 E Huron St",1831546,,"BCEG",,"Chicago","23986",1177847.8715,1904974.1935
+"Ann & Robert H. Lurie Children's Memorial Hospital","Hospital","Hospital","225 E Chicago Ave",0,,"E",,"Chicago","24015",1177941.4155,1905576.10675
+"Saint Joseph Hospital","Hospital","Hospital","2900 N Lake Shore Dr",2662359,,"BCEG",,"Chicago","24035",1173612.715,1919469.12575
+"Childrens Memorial Hospital","Hospital","Hospital","2300 N Childrens Plz",1826608,,"BCG",,"Chicago","24131",1170923.471,1915906.0875
+"Our Lady of Resurrection Medical Center","Hospital","Hospital","5645 W Addison St",2662354,,"BCEG",,"Chicago","24228",1138058.2805,1923205.1055
+"Saint James Hospital and Health Center","Hospital","Hospital","1423 Chicago Rd",426736,,"CEGIL",,"Chicago Heights","24524",1174361.5765,1763043.91075
+"Kindred-Lakeshore Hospital","Hospital","Hospital","6130 N Sheridan Rd",0,,"E",,"Chicago","24574",1168351.816,1940980.0575
+"Trinity Hospital","Hospital","Hospital","2320 E 93rd St",418737,,"CEG",,"Chicago","25010",1193439.44575,1843927.735
+"Louis A Weiss Memorial Hospital","Hospital","Hospital","4640 N Marine Dr",420716,,"CE",,"Chicago","25144",1170221.26875,1931171.858
+"Resurrection Medical Center","Hospital","Hospital","5901 N Oriole Ave",416556,,"BCEG",,"Chicago","25184",1125267.3145,1938576.97075
+"Advocate South Suburban Hospital","Hospital","Hospital","17800 Kedzie Ave",426773,,"CEG",,"Hazel Crest","25475",1158086.1005,1785164.478
+"Ingalls Memorial Hospital","Hospital","Hospital","1 Ingalls Dr",410890,,"BCEGL",,"Harvey","25563",1168559.63875,1800166.832
+"Palos Community Hospital","Hospital","Hospital","12251 S 80th Ave",414079,,"BCEGL",,"Palos Park","25857",1126404.39225,1822506.36175
+"Advocate Good Shepherd Hospital","Hospital","Hospital","450 West Highway 22",0,,"E",,"Barrington","25962",1027421.4695,2013821.0775
+"Advocate Sherman Hospital","Hospital","Hospital","1425 North Randall Road",0,,"E",,"Elgin","25963",985000.59225,1968112.3575
+"Presence Saint Joseph Hospital","Hospital","Hospital","77 N  Airlite Street",0,,"E",,"Elgin","25964",986079.13425,1955506.00775
+"Elmhurst Memorial Hospital","Hospital","Hospital","155 E Brush Hill Road",0,,"E",,"Elmhurst","25965",1092538.36775,1893285.03875
+"Advocate Good Samaritan Hospital","Hospital","Hospital","3815 Highland Ave",0,,"E",,"Downers Grove","25966",1072944.03525,1876856.013
+"Adventist Hinsdale Hospital","Hospital","Hospital","120 N Oak Street",0,,"E",,"Hinsdale","25967",1096758.89625,1872031.947
+"Adventist Bolingbrook Hospital","Hospital","Hospital","500 Remington Blvd",0,,"E",,"Bolingbrook","25968",1052199.888,1826628.2375
+"Silver Cross Hospital","Hospital","Hospital","1900 Silver Cross Blvd",0,,"E",,"New Lenox","25969",1080013.3955,1776890.6735
+"Franciscan St Margaret Health","Hospital","Hospital","24 Joliet St",0,,"E",,"Dyer","25970",1205385.23325,1758522.3785
+"Franciscan Healthcare","Hospital","Hospital","701 Superior Ave",0,,"E",,"Munster","25971",1209010.9525,1775400.25125
+"Community Hospital","Hospital","Hospital","901 MACARTHUR BLVD",0,,"E",,"Munster","25972",1210507.242,1779913.201
+"St Catherine Hospital","Hospital","Hospital","4321 Fir St",0,,"E",,"East Chicago","25973",1226086.36025,1810837.249
+"Franciscan St Margaret Health","Hospital","Hospital","5454 Hohman Ave",0,,"E",,"Hammond","25974",1205673.04475,1803293.957
+"Adventist GlenOaks Hospital","Hospital","Hospital","701 Winthrop Ave",0,,"E",,"Glendale Heights","25982",1059418.73225,1911692.141
+"NorthShore University HealthSystem Highland Park Hospital","Hospital","Hospital","777 Park Avenue West",0,,"E",,"Highland Park","25983",1126718.472,2012473.2245
+"MacNeal Hospital","Hospital","Hospital","3249 Oak Park Ave",412787,,"CEG",,"Berwyn","26142",1131736.42475,1881812.09925
