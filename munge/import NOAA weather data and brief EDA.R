@@ -136,6 +136,25 @@ kdepairs(weather.all[!(is.na(weather.all$TMIN) |
                          is.na(weather.all$TAVG))
                      ,colnames(weather.all) %in% c("TMIN","TMAX","TAVG","tavg2")])
 
+################################################################################
+## Save R dataset with minimal modifications
+################################################################################
+
+noaa.weather <- weather.all 
+
+getwd()
+setwd(my.path)
+getwd()
+
+
+# save(westnile.unedited, file="pump.unedited.RData", compress = FALSE)
+# save(westnile.all, file="westnile.all.RData", compress = FALSE)
+# save(westnile.eda, file="westnile.eda.RData", compress = FALSE)
+
+save(noaa.weather, file="noaa.weather.RData", compress = FALSE)
+
+write.csv(noaa.weather, paste(my.path,'noaa.weather.csv',sep='\\'))
+
 
 
 
