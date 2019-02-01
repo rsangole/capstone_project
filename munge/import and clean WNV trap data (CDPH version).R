@@ -483,6 +483,11 @@ my.cdph.aggr(c("species"),df=wnv.trap.date.species)
 my.cdph.aggr(c("yr"),df=wnv.trap.date.species)
 
 
+
+
+
+
+
 ################################################################################
 ## Save R dataset with minimal modifications
 ################################################################################
@@ -500,8 +505,61 @@ getwd()
 save(wnv.trap.date, file="wnv.trap.date.RData", compress = FALSE)
 save(wnv.trap.date.species, file="wnv.trap.date.species.RData", compress = FALSE)
 
-write.csv(wnv.trap.date, paste(my.path,'wnv.trap.date.csv',sep='\\'))
-write.csv(wnv.trap.date.species, paste(my.path,'wnv.trap.date.species.csv',sep='\\'))
+write.csv(wnv.trap.date, paste(my.path,'wnv.trap.date.csv',sep='\\'),row.names = FALSE)
+write.csv(wnv.trap.date.species, paste(my.path,'wnv.trap.date.species.csv',sep='\\'),row.names = FALSE)
+
+
+save(wnv.traps, file="wnv.traps.RData", compress = FALSE)
+write.csv(wnv.traps, paste(my.path,'wnv.traps.csv',sep='\\'),row.names = FALSE)
+
+
+################################################################################
+## Convert coordinates to a shapefile in ESRI ArcGIS then to a layer file
+## then perform spatial join (intersection) with block group shapefile, then 
+## convert resulting shapefile's tabular component (DBF) to CSV.  Finally, 
+## read back into R.  
+## Repeat for Chicago community area and Zip Code Tabulation Area (ZCTA).
+################################################################################
+
+wnv.zcta <- read.csv(paste(base.path,'data','wnv_traps_zcta.csv',sep="\\"),stringsAsFactors = FALSE)
+wnv.blkgrp <- read.csv(paste(base.path,'data','wnv_traps_BG2018.csv',sep="\\"),stringsAsFactors = FALSE)
+wnv.community.area <- read.csv(paste(base.path,'data','wnv_traps_CommArea.csv',sep="\\"),stringsAsFactors = FALSE)
+
+str(wnv.zcta)
+summary(wnv.zcta$ZCTA5CE10)
+
+str(wnv.blkgrp)
+summary(wnv.blkgrp$STATEFP)
+summary(wnv.blkgrp$COUNTYFP)
+summary(wnv.blkgrp$TRACTCE)
+summary(wnv.blkgrp$BLKGRPCE)
+summary(wnv.blkgrp$GEOID)
+
+str(wnv.community.area)
+summary(wnv.community.area$community)
+ftable(wnv.community.area$community)
+
+wnv.trap.geo <- inner_join(wnv.traps,wnv.zcta[,c("trap_name","ZCTA5CE10")]
+                           ,by=c("trap.name" = "trap_name"))
+wnv.trap.geo2 <- inner_join(wnv.trap.geo,wnv.blkgrp[,c("trap_name","STATEFP"
+                                                       ,"COUNTYFP"
+                                                       ,"TRACTCE"
+                                                       ,"BLKGRPCE"
+                                                       ,"GEOID")]
+                           ,by=c("trap.name" = "trap_name"))
+wnv.trap.geo3 <- inner_join(wnv.trap.geo2,wnv.community.area[,c("trap_name","community")]
+                            ,by=c("trap.name" = "trap_name"))
+wnv.traps <- wnv.trap.geo3
+
+
+
+################################################################################
+## Save updated trap data
+################################################################################
+
+
+save(wnv.traps, file="wnv.traps.RData", compress = FALSE)
+write.csv(wnv.traps, paste(my.path,'wnv.traps.csv',sep='\\'),row.names = FALSE)
 
 
 
