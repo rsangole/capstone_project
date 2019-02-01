@@ -43,3 +43,4 @@ vignettes/*.pdf
 
 # End of https://www.gitignore.io/api/r
 
+data/raw/vacant_properties/Vacant_and_Abandoned_Buildin.dbf.FSMGWGS7V1.42148.38344.sr.lock
