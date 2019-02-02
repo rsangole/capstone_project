@@ -16,7 +16,7 @@ filename.list
 
 
 ################################################################################
-## Load vacancy data
+## Load building violation data
 ################################################################################
 
 violations.csv <- "Building_Violations.csv"
@@ -62,9 +62,9 @@ write.csv(violation.locations,paste(repo.path,"data\\raw\\building_violations","
 ## Repeat for Chicago community area and Zip Code Tabulation Area (ZCTA).
 ################################################################################
 
-viol.loc.zcta <- read.dbf(paste(repo.path,'data\\raw\\building_violations','violation_locations_zcta.dbf',sep="\\"))
-viol.loc.blkgrp <- read.dbf(paste(repo.path,'data\\raw\\building_violations','violation_locations_bg.dbf',sep="\\"))
-viol.loc.community.area <- read.dbf(paste(repo.path,'data\\raw\\building_violations','violation_locations_CommArea.dbf',sep="\\"))
+viol.loc.zcta <- read.dbf(paste(repo.path,'data\\raw\\building_violations\\GIS','violation_locations_zcta.dbf',sep="\\"))
+viol.loc.blkgrp <- read.dbf(paste(repo.path,'data\\raw\\building_violations\\GIS','violation_locations_bg.dbf',sep="\\"))
+viol.loc.community.area <- read.dbf(paste(repo.path,'data\\raw\\building_violations\\GIS','violation_locations_CommArea.dbf',sep="\\"))
 
 viol.loc.1 <- left_join(violation.locations,viol.loc.zcta[,c("LATITUDE","LONGITUDE","ZCTA5CE10")]
                         ,by=c("LATITUDE","LONGITUDE"))
@@ -146,7 +146,29 @@ not.failed2 <- inner_join(violations2,not.failed1,by=c("LATITUDE","LONGITUDE",
 
 
 
-write.csv(violations2,paste(repo.path,"data\\raw\\building_violations","violations.csv",sep='\\'),row.names=FALSE)
+str(violations2)
+
+violations2b <- violations2[,colnames(violations2) %in% c(
+  "ID","violation.date","LATITUDE","LONGITUDE","LOCATION"
+  ,"ZCTA5CE10","STATEFP","COUNTYFP","TRACTCE","BLKGRPCE","GEOID","community"
+  ,"DEPARTMENT.BUREAU","INSPECTION.CATEGORY","VIOLATION.STATUS"
+)]
+
+str(violations2b)
+
+violations2c <- violations2[,colnames(violations2) %in% c(
+  "ID","violation.date","LATITUDE","LONGITUDE"
+  ,"ZCTA5CE10","GEOID","community"
+  ,"DEPARTMENT.BUREAU","INSPECTION.CATEGORY","VIOLATION.STATUS"
+)]
+
+
+################################################################################
+## Save CSV
+################################################################################
+
+
+write.csv(violations2c,paste(repo.path,"data\\raw\\building_violations","violations.csv",sep='\\'),row.names=FALSE)
 
 
 
