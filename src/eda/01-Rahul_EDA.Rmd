@@ -1,0 +1,82 @@
+---
+title: "Rahul's EDA"
+output: 
+  html_notebook: 
+    fig_height: 6
+    fig_width: 10
+    highlight: tango
+    theme: journal
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+library("tidyverse")
+library("xts")
+library("dygraphs")
+library("janitor")
+```
+
+# Google Trends
+
+```{r message=FALSE, warning=FALSE}
+google_trends <- read_csv("../../data/processed/google_trends.csv")
+google_trends$date <- lubridate::ymd(paste0(google_trends$date,"-01"))
+google_ts <- xts(google_trends[,-1],order.by = google_trends$date)
+head(google_ts)
+```
+
+```{r}
+google_ts %>% 
+    dygraph() %>% 
+    dyCrosshair("vertical") %>% 
+    dyRangeSelector() %>% 
+    dyOptions(drawPoints = TRUE, pointSize = 2, fillGraph = TRUE,
+              colors = RColorBrewer::brewer.pal(4, "Set2")) %>% 
+    dyLegend(width = 300,labelsSeparateLines = TRUE)
+```
+
+# WNV and Trap Data
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+wnv_trap_df <- read_csv("../../data/processed/wnv.trap.date.species.csv") %>% 
+    clean_names()
+head(wnv_trap_df)
+```
+
+```{r}
+wnv_trap_df %>% 
+    count(num_mosquitos)
+```
+
+```{r}
+wnv_ts <- wnv_trap_df %>% select(date,num_mosquitos,species) %>% 
+    group_by(date,species) %>% summarise(num_mosq = sum(num_mosquitos))
+wnv_ts <- wnv_ts %>% reshape2::dcast(date~species)
+wnv_ts <- xts(wnv_ts[,-1:-2],order.by = wnv_ts$date)
+```
+
+```{r}
+wnv_ts %>% 
+    dygraph() %>% 
+    dyCrosshair("vertical") %>% 
+    dyRangeSelector() %>% 
+    dyOptions(drawPoints = TRUE, pointSize = 2, fillGraph = TRUE,
+              colors = RColorBrewer::brewer.pal(4, "Set2")) %>% 
+    dyLegend(width = 300,labelsSeparateLines = TRUE) %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+  dyRoller(rollPeriod = 2)
+```
+
+```{r}
+wnv_trap_df %>% 
+    ggplot(aes(x=lat,y = lng))+
+    geom_jitter(aes(color=any_wnv_present),alpha=0.2)+
+    theme(aspect.ratio = 1)
+```
+
+# WNV and Trap Data
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+wnv_trap_df <- read_csv("../../data/processed/wnv.trap.date.species.csv") %>% 
+    clean_names()
+head(wnv_trap_df)
+```
