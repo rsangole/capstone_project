@@ -170,4 +170,23 @@ str(wnv.trap.date.rev2)
 
 
 
+################################################################################
+## Save trap/date pairs with ancillary data sources merged to date
+################################################################################
+
+base.path <- "D:\\ajc188\\github\\capstone_project"
+
+my.path <- paste(base.path,"data","processed",sep="\\")
+
+
+getwd()
+setwd(my.path)
+getwd()
+list.files()
+
+
+save(wnv.trap.date.rev2, file="wnv.trap.date.rev2.RData", compress = FALSE)
+write.csv(wnv.trap.date.rev2, paste(my.path,'wnv.trap.date.rev2.csv',sep='\\'),row.names = FALSE)
+
+
 
