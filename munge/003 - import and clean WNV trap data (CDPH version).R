@@ -9,7 +9,7 @@
 # base.path <- "D:\\ajc188\\Dropbox\\Education\\data science (2014-2019)\\coursework\\msds498\\_topics\\West Nile"
 base.path <- "D:\\ajc188\\github\\capstone_project"
 
-my.path <- paste(base.path,"data","raw","processed",sep="\\")
+my.path <- paste(base.path,"data","processed",sep="\\")
 src.path <- paste(base.path,"data","raw","chi_dept_public_health",sep="\\")
 
 plot.path <- paste(base.path,"images",sep="\\")
@@ -107,6 +107,9 @@ traps.missing.lat.lng2 <- semi_join(cdph.wnv,traps.missing.lat.lng) %>%
 traps.missing.lat.lng3 <- traps.missing.lat.lng2
 
 ## Try just geocoding myself
+geocode.api.url <- "https://maps.googleapis.com/maps/api/geocode/json?"
+# geocode.api.key <- "xxx"
+
 traps.missing.lat.lng3$addr.to.geocode <- paste(gsub('XX'
                                                      ,'00'
                                                      ,traps.missing.lat.lng3$block)
@@ -121,8 +124,6 @@ library("httr")
 library("jsonlite")
 
 
-geocode.api.url <- "https://maps.googleapis.com/maps/api/geocode/json?"
-geocode.api.key <- "xxx"
 
 google.response <- sapply(traps.missing.lat.lng3$google.call,function(x) {
   if(!is.na(x) & x != "") { GET(x) }
@@ -572,6 +573,9 @@ wnv.trap.geo4$zone_class <- as.factor(wnv.trap.geo4$zone_class)
 
 wnv.traps <- wnv.trap.geo4
 
+str(wnv.trap.geo4)
+str(wnv.traps)
+# str(wnv.trap.date.2)
 
 
 ################################################################################

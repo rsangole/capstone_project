@@ -37,8 +37,47 @@ create.dates <- function(start.year,end.year) {
   return(df)
 }
 
-ref.dates <- create.dates(2007,2018)
+ref.dates <- create.dates(2006,2018)
 
+
+################################################################################
+## Train/validate/test partitions
+################################################################################
+
+ftable(ref.dates$yr)
+
+ref.dates$train <- ref.dates$yr %in% c(2007,2008,2009,2010,2011,2012,2013)
+ref.dates$validate <- ref.dates$yr %in% c(2014,2015,2016)
+ref.dates$test <- ref.dates$yr %in% c(2017,2018)
+
+ref.dates$partition <- ifelse(ref.dates$train,"train"
+                             ,ifelse(ref.dates$validate,"validate"
+                                     ,ifelse(ref.dates$test
+                                             ,"test"
+                                             ,"none")))
+
+summary(ref.dates$partition)
+ftable(ref.dates$partition,ref.dates$yr)
+
+
+
+################################################################################
+## Save reference dates data
+################################################################################
+
+base.path <- "D:\\ajc188\\github\\capstone_project"
+
+my.path <- paste(base.path,"data","processed",sep="\\")
+
+
+getwd()
+setwd(my.path)
+getwd()
+list.files()
+
+
+save(ref.dates, file="ref.dates.RData", compress = FALSE)
+write.csv(ref.dates, paste(my.path,'ref.dates.csv',sep='\\'),row.names = FALSE)
 
 
 
