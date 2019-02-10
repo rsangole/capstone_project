@@ -1,6 +1,9 @@
 
 
 
+
+
+
 ################################################################################
 ## EDA preparatory to restructuring
 ################################################################################
@@ -277,5 +280,93 @@ save(chi.weather.v1, file="chi.weather.v1.RData", compress = FALSE)
 
 write.csv(chi.weather.v1, paste(weather.path,'chi.weather.v1.csv',sep='\\'),row.names = FALSE)
 
+
+
+
+################################################################################
+## Create distance matrix (weather stations to trap locations)
+################################################################################
+
+wea2trap <- inner_join(
+  cbind(noaa.weather.stations[,c("STATION","NAME","LATITUDE","LONGITUDE")],dummy=1)
+  ,cbind(wnv.traps[,c("trap.name","rev.lat","rev.lng")],dummy=1)
+) %>% dplyr::select(-dummy) %>% ## rowwise() %>% 
+  mutate(wea.dist.m = 
+    geosphere::distHaversine(p1=cbind(LONGITUDE,LATITUDE)
+                             ,p2=cbind(as.numeric(rev.lng),as.numeric(rev.lat))
+    )) %>%
+  mutate(wea.dist.ft = wea.dist.m * 3.28084) %>%
+  mutate(wea.dist.mi = wea.dist.ft / 5280) %>%
+  dplyr::select(-c(wea.dist.ft)) %>%
+  dplyr::select(-c(LATITUDE,LONGITUDE,rev.lng,rev.lat,wea.dist.m)) 
+
+
+################################################################################
+## Rank weather stations in order of closest station to each trap
+## Limit to stations with nearly-complete temp/precipitation data
+################################################################################
+
+
+wea2trap.2 <- wea2trap %>%
+  arrange(trap.name,wea.dist.mi) %>%
+  group_by(trap.name) %>%
+  mutate(wea.seqn = row_number()) 
+# summary(wea2trap.2$wea.dist.ft)
+
+# head(wea2trap)
+
+nearest.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>% dplyr::select(-wea.seqn)
+
+
+
+
+################################################################################
+## Rank weather stations in order of closest station to each trap
+## Limit to stations with nearly-complete temp/precipitation data
+################################################################################
+
+summary(noaa.weather.stations)
+PRCP.stns <- noaa.weather.stations[noaa.weather.stations$PRCP.n >= 4500,]
+tavg2.stns <- noaa.weather.stations[noaa.weather.stations$tavg2.n >= 4500,]
+
+nearest.PRCP <- semi_join(wea2trap,PRCP.stns,by=c("STATION")) %>%
+  arrange(trap.name,wea.dist.mi) %>%
+  group_by(trap.name) %>%
+  mutate(wea.seqn = row_number()) %>% filter(wea.seqn==1) %>% 
+  dplyr::select(-wea.seqn)
+
+nearest.TEMP <- semi_join(wea2trap,tavg2.stns,by=c("STATION")) %>%
+  arrange(trap.name,wea.dist.mi) %>%
+  group_by(trap.name) %>%
+  mutate(wea.seqn = row_number()) %>% filter(wea.seqn==1) %>% 
+  dplyr::select(-wea.seqn)
+
+# I'm inclined to use nearest weather station for precipitation but not 
+# temperature.  The latter could give very incorrect estimates if you match
+# to a station close to the lake (e.g. Northerly Island) but the trap is 
+# actually not.
+
+
+
+
+################################################################################
+## Quick EDA
+################################################################################
+
+popular.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>% group_by(STATION,NAME) %>%
+  summarise(nrows=n()
+            ,min.wea.dist.mi = min(wea.dist.mi)
+            ,max.wea.dist.mi=max(wea.dist.mi)
+            ,mean.wea.dist.mi=mean(wea.dist.mi)
+            ,sd.wea.dist.mi=sd(wea.dist.mi)
+            ) %>% 
+  arrange(-nrows)
+popular.stations
+
+
+
+################################################################################
+## Quick EDA
+################################################################################
 
 
