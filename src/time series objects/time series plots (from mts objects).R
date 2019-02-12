@@ -154,6 +154,99 @@ ts.plots <- sapply(1:ceiling(dim(community_wkly_ts)[2]/10),function(x) {
 
 
 
+################################################################################
+## Impute missing data
+
+community_wkly_ts_imp <- community_wkly_ts
+
+
+## If there are no observations in this time period, treat it as zero.
+observed.values <- rowSums(!is.na(community_wkly_ts_imp))
+community_wkly_ts_imp[observed.values == 0,]<- 0
+
+# require(mice)
+# miss.data.pat <- md.pattern(community_wkly_ts_imp)
+
+# str(community_wkly_ts_imp)
+
+# Convert back to data.frame before imputing (and clean up names)
+community_wkly_ts_imp <- as.data.frame(community_wkly_ts_imp) %>% 
+  setNames(gsub(" ","_",names(.))) 
+
+imputed.via.predmean <- mice(community_wkly_ts_imp, m=5, maxit = 10, method = 'pmm', seed = 500)
+
+
+# Cycle through imputations, using the mean of the 5 imputations
+# I used a for loop here which is not great but is quick-and-dirty
+
+
+extract.mean <- function(x) {
+  imputations <- imputed.via.predmean$imp[x]
+  means <- rowMeans(as.data.frame(imputations))
+  return(means)
+}
+
+update.values <- function(x) {
+  means <- extract.mean(x)
+  community_wkly_ts_imp2[as.integer(names(means)),x] <- means
+  return(community_wkly_ts_imp2)
+}
+
+# extract.mean(names(imputed.via.predmean$imp)[1])
+# update.values(names(imputed.via.predmean$imp)[1])$ARCHER_HEIGHTS
+
+
+summary(community_wkly_ts_imp)
+
+community_wkly_ts_imp2 <- community_wkly_ts_imp
+
+for(col in names(imputed.via.predmean$imp)) {
+  community_wkly_ts_imp2 <- update.values(col)
+}
+
+summary(community_wkly_ts_imp2)
+
+community_wkly_ts_imp <- ts(community_wkly_ts_imp2,frequency=52)
+
+# ts.plots <- sapply(1:ceiling(dim(community_wkly_ts_imp)[2]/10),function(x) {
+#   ts <- community_wkly_ts_imp[,
+#                           ((x-1)*10+1):
+#                             min(((x-1)*10+10),dim(community_wkly_ts_imp)[2])
+#                           ]
+#   # batch.name = paste('Community-level Weekly Time Series, batch ',x,'.png',sep='')
+#   # png(paste(plot.path,batch.name,sep='\\'))
+#   plot(ts)
+#   # dev.off()
+# })
+
+
+################################################################################
+## Try working with community-level time series (with fully imputed data)
+
+str()
+acf(community_wkly_ts_imp[,1])
+
+plot(community_wkly_ts_imp[,1])
+plot.ts(community_wkly_ts_imp[,1])
+
+seasonplot(community_wkly_ts_imp[,1])
+decompose(community_wkly_ts_imp[,1])
+
+gglagplot(community_wkly_ts_imp[,1])
+ggAcf(community_wkly_ts_imp[,1])
+ggsubseriesplot(community_wkly_ts_imp[,1])
+
+
+community_wkly_ts_imp[,1] %>% decompose(type="multiplicative") %>%
+  autoplot()
+
+community_wkly_ts_imp[,1] %>% stl(t.window=13, s.window="periodic"
+                                  , robust=TRUE) %>%
+  autoplot()
+
+
+
+
 
 
 
