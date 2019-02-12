@@ -81,65 +81,7 @@ stations <- stations %>% arrange(-nrows)
 
 
 ################################################################################
-## Examine other data
-################################################################################
-
-weather.ohare <- weather.all[weather.all$NAME %in% c('CHICAGO OHARE INTERNATIONAL AIRPORT, IL US')
-                             ,regexpr('ATTRIBUTE',colnames(weather.all)) < 0]
-
-
-# weather.ohare2 <- weather.ohare[, unlist(lapply(weather.ohare, function(x) !all(is.na(x))))]
-weather.ohare2 <- weather.ohare %>% group_by(yr,mo) %>% summarise_all(max)
-weather.ohare3 <- weather.ohare %>% group_by(mo) %>% summarise_all(max)
-
-# AWND = Average daily wind speed (meters per second or miles per hour as per user preference)
-# FMTM = Time of fastest mile or fastest 1-minute wind (hours and minutes, i.e., HHMM)
-# PGTM = Peak gust time (hours and minutes, i.e., HHMM)
-# PRCP = Precipitation (mm or inches as per user preference, inches to hundredths on Daily Form pdf file)
-# SNOW = Snowfall (mm or inches as per user preference, inches to tenths on Daily Form pdf file)
-# SNWD = Snow depth (mm or inches as per user preference, inches on Daily Form pdf file)
-# TMAX = Maximum temperature (Fahrenheit or Celsius as per user preference, Fahrenheit to tenths on
-#                             Daily Form pdf file
-# TMIN = Minimum temperature (Fahrenheit or Celsius as per user preference, Fahrenheit to tenths on
-#                             Daily Form pdf file
-# WDF2 = Direction of fastest 2-minute wind (degrees)
-# WDF5 = Direction of fastest 5-second wind (degrees)                           
-# WSF2 = Fastest 2-minute wind speed (miles per hour or meters per second as per user preference)
-# WSF5 = Fastest 5-second wind speed (miles per hour or meters per second as per user preference)
-
-# TAVG = average hourly values of temp
-# TSUN = Daily total sunshine (minutes)
-
-summary(weather.ohare2)
-summary(weather.ohare3)
-
-summary(weather.all$TAVG[!is.na(weather.all$TAVG)])
-summary(weather.all$TSUN[!is.na(weather.all$TSUN)])
-
-summary(weather.all$TAVG)
-summary(weather.all$TMIN)
-summary(weather.all$TMAX)
-
-summary(weather.all$ACSC[!is.na(weather.all$ACSC)])
-summary(weather.all$ACSC)
-
-summary(weather.all$ACSH)
-
-kdepairs(weather.all[!(is.na(weather.all$TMIN) | 
-                         is.na(weather.all$TMAX) | 
-                         is.na(weather.all$TAVG))
-                     ,colnames(weather.all) %in% c("TMIN","TMAX","TAVG")])
-
-weather.all$tavg2 <- (weather.all$TMIN + weather.all$TMAX) / 2
-
-kdepairs(weather.all[!(is.na(weather.all$TMIN) | 
-                         is.na(weather.all$TMAX) | 
-                         is.na(weather.all$TAVG))
-                     ,colnames(weather.all) %in% c("TMIN","TMAX","TAVG","tavg2")])
-
-
-################################################################################
-## 
+## Reshape weather data
 ################################################################################
 
 # str(weather.all)
@@ -159,7 +101,40 @@ weather.stations.2 <-
   weather.all[,regexpr('ATTRIBUTE',colnames(weather.all)) < 0
               & !colnames(weather.all) %in% c("DATE","date","date2","yr","mo")] %>% 
   group_by(STATION,NAME,location,LATITUDE,LONGITUDE,ELEVATION) %>% 
-  summarise_all(funs(sum(!is.na(.))))
+  summarise_all(funs(sum(!is.na(.)))) 
+
+# Calculate percentage of daily observations that are non-missing
+calc.pct <- function(x,denom) {100*x/denom}
+weather.stations.3 <- cbind(  as.data.frame(weather.all[,regexpr('ATTRIBUTE',colnames(weather.all)) < 0
+                                               & !colnames(weather.all) %in% c("DATE","date","date2","yr","mo")] %>% 
+                                     group_by(STATION,NAME,location,LATITUDE,LONGITUDE,ELEVATION) %>%
+                                     summarise(nrows=n()) %>% ungroup() %>% summarise(nrows = max(nrows)))
+                                     ,as.data.frame(weather.stations.2)) %>%
+  group_by(STATION,NAME,location,LATITUDE,LONGITUDE,ELEVATION,nrows) %>%
+  summarise_all(funs(calc.pct(.,nrows)))
+
+is.above.95.pct <- function(x) {x >= 0.95}
+weather.stations.4 <- weather.stations.3 %>% 
+  group_by(STATION,NAME,location,LATITUDE,LONGITUDE,ELEVATION,nrows) %>%
+  summarise_all(funs(is.above.95.pct(.)))
+summary(weather.stations.4)
+
+
+# AWND -> 3 stations
+# DAPR -> days included in multiday precipitation - skip
+# DASF multiday snowfall
+# EVAP - evaporation of water from pan -- maYYYYYbe; n=1
+# FMTM - time of fastest wind (n=1)
+# MDPR - multi-day precipitation? n=1
+# MDSF n=0
+# MPNP evap pan min temp n=1
+# MXPN evap pan max temp n=1
+# PGTM peak gust time n = 3
+# PRCP, n=302
+# SN32, soil temp bare ground... n=2
+# SNOW n = 281
+# SNWD
+
 weather.stations <- inner_join(weather.stations.1,weather.stations.2)
 summary(weather.stations)
 

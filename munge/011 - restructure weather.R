@@ -86,7 +86,7 @@ noaa.weather$PGTM
 noaa.weather$PRCP
 noaa.weather.stations$PRCP.n
 
-  
+summary(weather.stations.3)
   
 noaa.weather <- left_join(ref.dates
                           ,weather.all[
@@ -105,38 +105,10 @@ noaa.weather <- left_join(ref.dates
 
 
 
-################################################################################
-## Just get two Midway stations & O'Hare and see how variables compare
-################################################################################
-
-# Subset to three stations previously identified as Chicago airports
-chicago.3 <- weather.all[weather.all$STATION 
-                         %in% c("USC00111577","USW00014819","USW00094846"),] %>%
-  arrange(date,STATION)
-# Remove columns without data
-chicago.3 <- chicago.3[, unlist(lapply(chicago.3, function(x) !all(is.na(x))))]
-# Remove attribute columns
-chicago.3 <- chicago.3[,!colnames(chicago.3) %in% 
-                         c("LATITUDE","LONGITUDE"
-                           ,"ELEVATION"
-                           ,colnames(chicago.3)[regexpr('ATTRIBUTES',colnames(chicago.3)) > 0])]
-
-chicago.2 <- weather.all[weather.all$STATION 
-                         %in% c("USW00014819","USW00094846"),] %>%
-  arrange(date,STATION)
-# Remove columns without data
-chicago.2 <- chicago.2[, unlist(lapply(chicago.2, function(x) !all(is.na(x))))]
-# Remove attribute columns
-chicago.2 <- chicago.2[,!colnames(chicago.2) %in% 
-                         c("LATITUDE","LONGITUDE"
-                           ,"ELEVATION"
-                           ,colnames(chicago.2)[regexpr('ATTRIBUTES',colnames(chicago.2)) > 0])]
-
-# Convert into station/date pairs??
 
 
 ################################################################################
-## Just get two Midway stations & O'Hare and see how variables compare
+## Just get Midway & O'Hare and see how variables compare
 ################################################################################
 
 # weather.subset <- weather.all[1:200,c("STATION","date","PRCP","TMAX","TMIN","TAVG","tavg2")]
@@ -185,31 +157,9 @@ chk.miss3 <- chgo.airports.wide[rowSums(is.na(chgo.airports.wide)) > 0,]
 
 
 ################################################################################
-## Impute missing values... via random forest?
-################################################################################
-
-# chgo.airports.nonmissing <- chgo.airports.wide[rowSums(is.na(chgo.airports.wide)) == 0
-#                                                ,!colnames(chgo.airports.wide) 
-#                                                %in% c("date","day","qtr"
-#                                                       ,"wk","day.of.wk"
-#                                                       ,"day.of.wk.name"
-#                                                       ,"eval.wk","eval.day")]
-# summary(chgo.airports.nonmissing)
-# 
-# set.seed(38979)
-# miss.rf1 <- randomForest(USW00014819_PRCP~.
-#                          ,data=chgo.airports.nonmissing
-#                          ,importance=T)
-# varImp(miss.rf1)
-# predict(miss.rf1,chgo.airports.wide[is.na(chgo.airports.wide$USW00014819_PRCP),])
-
-## I don't want to deal with the complications of missing data for multiple
-## variables simultaneously.
-
-
-################################################################################
 ## Impute missing values... via "Multiple Imputation by Chained Equations"
 ## using mice package in R
+## Run 5 iterations and take mean of those five
 ################################################################################
 
 require(mice)
@@ -217,7 +167,7 @@ require(mice)
 miss.data.pat <- md.pattern(chgo.airports.wide)
 
 # imputed.via.predmean <- mice(chgo.airports.wide, m=5, maxit = 30, method = 'pmm', seed = 500)
-imputed.via.predmean <- mice(chgo.airports.wide, m=1, maxit = 50, method = 'pmm', seed = 500)
+imputed.via.predmean <- mice(chgo.airports.wide, m=5, maxit = 50, method = 'pmm', seed = 500)
 
 summary(imputed.via.predmean)
 summary(imputed.via.predmean$imp)
@@ -326,6 +276,8 @@ nearest.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>% dplyr::select(-wea.se
 ################################################################################
 
 summary(noaa.weather.stations)
+
+
 PRCP.stns <- noaa.weather.stations[noaa.weather.stations$PRCP.n >= 4500,]
 tavg2.stns <- noaa.weather.stations[noaa.weather.stations$tavg2.n >= 4500,]
 
@@ -353,7 +305,8 @@ nearest.TEMP <- semi_join(wea2trap,tavg2.stns,by=c("STATION")) %>%
 ## Quick EDA
 ################################################################################
 
-popular.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>% group_by(STATION,NAME) %>%
+popular.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>% 
+  group_by(STATION,NAME) %>%
   summarise(nrows=n()
             ,min.wea.dist.mi = min(wea.dist.mi)
             ,max.wea.dist.mi=max(wea.dist.mi)
@@ -368,5 +321,32 @@ popular.stations
 ################################################################################
 ## Quick EDA
 ################################################################################
+
+
+weather.all$tavg2 <- ifelse(is.na(weather.all$TAVG)
+                            ,(weather.all$TMIN + weather.all$TMAX)/2
+                            ,weather.all$TAVG)
+
+weather.wide <- weather.all %>% 
+  dplyr::select(-ends_with('ATTRIBUTES')) %>%
+  group_by(STATION,date) %>%
+  dplyr::select(starts_with('t')) %>%
+  gather(variable,value,-c(STATION,date)) %>%
+  unite(station.variable, STATION, variable) %>%
+  spread(station.variable,value)
+
+
+# kdepairs(weather.wide[rowSums(weather.wide,is.na) == 0,-c(1)])
+
+# weather.wide %>% ungroup() %>% dplyr::select(contains("tavg2")) %>%
+#   # .[., colSums(. != 0) > 0] %>%
+#   select(which(!colSums(., na.rm=TRUE) %in% 0))
+#   dplyr::select(colSums(is.na(.) == 0)) %>%
+#   # filter(rowSums(is.na(.)) == 0) %>% 
+#   kdepairs()
+
+
+
+
 
 
