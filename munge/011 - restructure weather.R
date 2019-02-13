@@ -311,6 +311,8 @@ nearest.TEMP <- semi_join(wea2trap,tavg2.stns,by=c("STATION")) %>%
 # to a station close to the lake (e.g. Northerly Island) but the trap is 
 # actually not.
 
+nearest_temps <- inner_join(wnv.traps,nearest.TEMP) %>%
+  inner_join()
 
 
 
@@ -343,7 +345,7 @@ weather.all$tavg2 <- ifelse(is.na(weather.all$TAVG)
 weather.wide <- weather.all %>% 
   dplyr::select(-ends_with('ATTRIBUTES')) %>%
   group_by(STATION,date) %>%
-  dplyr::select(starts_with('t')) %>%
+  dplyr::select(c(starts_with('t'),starts_with('prcp'))) %>%
   gather(variable,value,-c(STATION,date)) %>%
   unite(station.variable, STATION, variable) %>%
   spread(station.variable,value)
@@ -358,6 +360,16 @@ weather.wide <- weather.all %>%
 #   # filter(rowSums(is.na(.)) == 0) %>% 
 #   kdepairs()
 
+getwd()
+setwd(paste("D:","ajc188","github","capstone_project","data","raw",sep='\\'))
+getwd() 
+
+weather_wide <- weather.wide %>%
+  setNames(tolower(gsub(" ","_",names(.))) )
+
+
+save(weather_wide, file="weather_wide.RData", compress = FALSE)
+write.csv(weather_wide, 'weather_wide.csv',row.names = FALSE)
 
 
 
