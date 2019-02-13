@@ -240,7 +240,7 @@ ggsubseriesplot(community_wkly_ts_imp[,1])
 community_wkly_ts_imp[,1] %>% decompose(type="multiplicative") %>%
   autoplot()
 
-community_wkly_ts_imp[,1] %>% stl(t.window=13, s.window="periodic"
+community_wkly_ts_imp[,1] %>% stl(t.window=12, s.window="periodic"
                                   , robust=TRUE) %>%
   autoplot()
 

@@ -250,6 +250,19 @@ wea2trap <- inner_join(
   dplyr::select(-c(wea.dist.ft)) %>%
   dplyr::select(-c(LATITUDE,LONGITUDE,rev.lng,rev.lat,wea.dist.m)) 
 
+wea_dist_matrix <- wea2trap %>%
+  setNames(tolower(gsub(" ","_",names(.))) )
+
+  
+getwd()
+setwd(paste("D:","ajc188","github","capstone_project","data","raw",sep='\\'))
+getwd() 
+
+
+save(wea_dist_matrix, file="wea_dist_matrix.RData", compress = FALSE)
+write.csv(wea_dist_matrix, 'wea_dist_matrix.csv',row.names = FALSE)
+
+
 
 ################################################################################
 ## Rank weather stations in order of closest station to each trap
