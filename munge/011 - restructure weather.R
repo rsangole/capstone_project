@@ -322,6 +322,45 @@ weather.subset.wide.summary <- weather.subset.wide %>% ungroup() %>%
 weather.subset.wide2 <- as.data.frame(weather.subset.wide)
 
 
+
+################################################################################
+## Impute missing data for selected variables
+################################################################################
+
+require(mice)
+wide.imputations <- mice(weather.wide, m=10, maxit = 10, method = 'pmm', seed = 500)
+
+extract.mean <- function(x,imp.obj) {
+  imputations <- imp.obj$imp[x]
+  means <- rowMeans(as.data.frame(imputations))
+  return(means)
+}
+
+update.values <- function(x,imp.obj) {
+  means <- extract.mean(x,imputed.via.predmean)
+  weather.wide.imp[as.integer(names(means)),x] <- means
+  return(weather.wide.imp)
+}
+
+weather.subset.wide.imp <- weather.subset.wide2
+
+for(col in names(wide.imputations$imp)) {
+  weather.subset.wide.imp <- update.values(col,wide.imputations)
+}
+
+rowSums(is.na(weather.wide[,-1]))
+rowSums(is.na(weather.wide.imp[,-1]))
+
+rowSums(!is.na(weather.wide[,-1]))
+rowSums(!is.na(weather.wide.imp[,-1]))
+
+
+str(weather.wide.imp)
+
+summary(weather.wide.imp %>% dplyr::select(matches('tavg2')) %>% 
+          select(matches())
+        .[,1:20])
+
 ################################################################################
 ## Daily temp/precip weather data -- all stations
 ################################################################################
