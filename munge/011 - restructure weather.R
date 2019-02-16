@@ -234,6 +234,178 @@ write.csv(chi.weather.v1, paste(weather.path,'chi.weather.v1.csv',sep='\\'),row.
 
 
 ################################################################################
+## Cycle through weather variables.  For each, pull out the subset of 
+## stations with nearly-complete data
+################################################################################
+
+
+# chk <- weather.all %>% group_by(STATION) %>% summarise(n=n(),n.date = n_distinct(date))
+weather.all %>% group_by(STATION) %>% 
+  summarise(n=n(),n.date = n_distinct(date)) %>% summary(.)
+# Max # of observations is 4748
+
+
+get.stations.nearly.complete <- function(col, df = weather.all,threshold=0.95)  {
+  col.pcts <- df %>% group_by(STATION) %>%
+    summarise(n=n()
+              ,dates=n_distinct(date)
+              ,n.nonmiss = sum(!is.na(!! sym(col)))
+              ,pct.nonmiss=sum(!is.na(!! sym(col)))/4748
+              ,n.miss=sum(is.na(!! sym(col)))
+              ,pct.miss=sum(is.na(!! sym(col)))/4748
+    ) %>% 
+    mutate(keep = pct.nonmiss >= threshold)
+  df.out <- df %>% semi_join(col.pcts %>% filter(keep),by=("STATION")) %>% 
+    dplyr::select(STATION,date,col) %>% gather(attribute
+                                               , value
+                                               , (!! sym(col))
+                                               , factor_key=FALSE)
+  return(df.out)
+}
+
+# chk <-  get.stations.nearly.complete("AWND")
+# chk <-  get.stations.nearly.complete("SNOW")
+
+weather.subset <- lapply(
+  # colnames(weather.all[,-(1:6)] %>% dplyr::select(-contains('attrib')) %>% .[,1:10])
+  # colnames(weather.all[,-(1:6)] %>% dplyr::select(-contains('attrib')) )
+  colnames(weather.all[,-(1:6)] %>% dplyr::select(c(-contains('attrib')),-location,-yr,-mo,-date2,-date) )
+  ,get.stations.nearly.complete
+)
+
+# str(weather.subset)
+
+weather.subset2 <- do.call("rbind", weather.subset)
+
+str(weather.subset2)
+summary(weather.subset2)
+
+weather.attributes <- weather.subset2 %>% group_by(attribute) %>% 
+  summarise(n=n()
+            ,stations = n_distinct(STATION)
+            ,dates = n_distinct(date)
+            ,n.nonmissing = sum(!is.na(value))
+            ,n.missing = sum(is.na(value)))
+weather.chk.stations <- weather.subset2 %>% group_by(STATION) %>% 
+  summarise(n=n()
+            ,attributes = n_distinct(attribute)
+            ,dates = n_distinct(date)
+            ,n.nonmissing = sum(!is.na(value))
+            ,n.missing = sum(is.na(value)))
+weather.chk.stations.attr <- weather.subset2 %>% group_by(attribute,STATION) %>% 
+  summarise(n=n()
+            ,stations = n_distinct(STATION)
+            ,attributes = n_distinct(attribute)
+            ,dates = n_distinct(date)
+            ,n.nonmissing = sum(!is.na(value))
+            ,n.missing = sum(is.na(value)))
+weather.chk.stations.attr2 <- left_join(weather.chk.stations.attr,
+                                        weather.all %>% group_by(STATION,NAME,
+                                                                 location) %>%
+                                          summarise(n=n()) %>%
+                                          dplyr::select(-n)
+                                        ,by="STATION")
+
+weather.subset.wide <- weather.subset2 %>% arrange(attribute,STATION,date) %>%
+  group_by(STATION,date) %>%
+  # gather(variable,value,-c(STATION,date)) %>%
+  unite(station.attribute, STATION, attribute) %>%
+  spread(station.attribute,value)
+
+# summary(weather.subset.wide)
+
+# sum.is.na <- function(x) {sum(is.na(x))}
+# weather.subset.wide %>% summarise_all(.funs=c(sum(is.na),n))
+weather.subset.wide.summary <- weather.subset.wide %>% ungroup() %>%
+  summarise_all(funs(cnt = sum(!is.na(.)), sum = sum(.,na.rm=TRUE)))
+
+weather.subset.wide2 <- as.data.frame(weather.subset.wide)
+
+
+################################################################################
+## Daily temp/precip weather data -- all stations
+################################################################################
+
+
+weather.all$tavg2 <- ifelse(is.na(weather.all$TAVG)
+                            ,(weather.all$TMIN + weather.all$TMAX)/2
+                            ,weather.all$TAVG)
+
+weather.wide <- weather.all %>% 
+  dplyr::select(-ends_with('ATTRIBUTES')) %>%
+  group_by(STATION,date) %>%
+  dplyr::select(c(starts_with('t'),contains('prcp'))) %>%
+  gather(variable,value,-c(STATION,date)) %>%
+  unite(station.variable, STATION, variable) %>%
+  spread(station.variable,value)
+
+summary(weather.all %>% dplyr::select(-ends_with('ATTRIBUTES')))
+
+# kdepairs(weather.wide[rowSums(weather.wide,is.na) == 0,-c(1)])
+
+# weather.wide %>% ungroup() %>% dplyr::select(contains("tavg2")) %>%
+#   # .[., colSums(. != 0) > 0] %>%
+#   select(which(!colSums(., na.rm=TRUE) %in% 0))
+#   dplyr::select(colSums(is.na(.) == 0)) %>%
+#   # filter(rowSums(is.na(.)) == 0) %>% 
+#   kdepairs()
+
+getwd()
+setwd(paste("D:","ajc188","github","capstone_project","data","raw",sep='\\'))
+getwd() 
+
+weather_wide <- weather.wide %>%
+  setNames(tolower(gsub(" ","_",names(.))) )
+
+
+save(weather_wide, file="weather_wide.RData", compress = FALSE)
+write.csv(weather_wide, 'weather_wide.csv',row.names = FALSE)
+
+
+################################################################################
+## Try imputing missing values for weather data
+################################################################################
+
+require(mice)
+
+# weather.wide.imp <- weather.wide
+imputed.via.predmean <- mice(weather.wide, m=5, maxit = 10, method = 'pmm', seed = 500)
+
+str(imputed.via.predmean)
+
+extract.mean <- function(x,imp.obj) {
+  imputations <- imp.obj$imp[x]
+  means <- rowMeans(as.data.frame(imputations))
+  return(means)
+}
+
+update.values <- function(x,imp.obj) {
+  means <- extract.mean(x,imputed.via.predmean)
+  weather.wide.imp[as.integer(names(means)),x] <- means
+  return(weather.wide.imp)
+}
+
+weather.wide.imp <- weather.wide
+
+for(col in names(imputed.via.predmean$imp)) {
+  weather.wide.imp <- update.values(col,imputed.via.predmean)
+}
+
+rowSums(is.na(weather.wide[,-1]))
+rowSums(is.na(weather.wide.imp[,-1]))
+
+rowSums(!is.na(weather.wide[,-1]))
+rowSums(!is.na(weather.wide.imp[,-1]))
+
+
+str(weather.wide.imp)
+
+summary(weather.wide.imp %>% dplyr::select(matches('tavg2')) %>% 
+          select(matches())
+          .[,1:20])
+
+
+################################################################################
 ## Create distance matrix (weather stations to trap locations)
 ################################################################################
 
@@ -311,8 +483,68 @@ nearest.TEMP <- semi_join(wea2trap,tavg2.stns,by=c("STATION")) %>%
 # to a station close to the lake (e.g. Northerly Island) but the trap is 
 # actually not.
 
+
+
+
+
 nearest_temps <- inner_join(wnv.traps,nearest.TEMP) %>%
-  inner_join()
+  inner_join(weather.all,by=c("STATION")) %>% 
+  dplyr::select(-ends_with('ATTRIBUTES')) %>%
+  group_by(trap.name,date) %>%
+  dplyr::select(STATION,tavg2,wea.dist.mi) %>%
+  dplyr::rename(nearest_temp = tavg2
+                ,nearest_temp_station = STATION
+                ,nearest_temp_dist_mi = wea.dist.mi)
+
+nearest_temps %>% ungroup() %>% summarise(n=n(),n.traps = n_distinct(trap.name)
+                                          ,n.stations = n_distinct(nearest_temp_station)
+                                          ,n.dates = n_distinct(date)
+                                          ,min.dist = min(nearest_temp_dist_mi)
+                                          ,max.dist = max(nearest_temp_dist_mi)
+                                          ,mean.dist = mean(nearest_temp_dist_mi))
+
+
+nearest_precips <- inner_join(wnv.traps,nearest.PRCP) %>%
+  inner_join(weather.all,by=c("STATION")) %>% 
+  dplyr::select(-ends_with('ATTRIBUTES')) %>%
+  group_by(trap.name,date) %>%
+  dplyr::select(STATION,PRCP,wea.dist.mi) %>%
+  dplyr::rename(nearest_prcp = PRCP
+                ,nearest_prcp_station = STATION
+                ,nearest_prcp_dist_mi = wea.dist.mi)
+
+nearest_precips %>% ungroup() %>% summarise(n=n(),n.traps = n_distinct(trap.name)
+                                          ,n.stations = n_distinct(nearest_prcp_station)
+                                          ,n.dates = n_distinct(date)
+                                          ,min.dist = min(nearest_prcp_dist_mi)
+                                          ,max.dist = max(nearest_prcp_dist_mi)
+                                          ,mean.dist = mean(nearest_prcp_dist_mi))
+
+nearest_precips_imp 
+summary(nearest_precips)
+summary(nearest_temps)
+
+
+################################################################################
+## Add this station data to our dataset
+################################################################################
+
+df$t_date <- as.Date(df$t_date) 
+
+df <- left_join(df,nearest_temps,by=c("trap_trap_name" = 'trap.name',"t_date" = "date"))
+df <- left_join(df,nearest_precips,by=c("trap_trap_name" = "trap.name","t_date" = "date"))
+
+
+kdepairs(df %>% dplyr::select(nearest_prcp,wea_midway_prcp,wea_ohare_prcp))
+
+
+getwd()
+setwd(paste("D:","ajc188","github","capstone_project","data","processed",sep='\\'))
+getwd() 
+
+save(df, file="df.RData", compress = FALSE)
+write.csv(df, 'df.csv',row.names = FALSE)
+
 
 
 
@@ -330,46 +562,6 @@ popular.stations <- wea2trap.2 %>% filter(wea.seqn==1) %>%
             ) %>% 
   arrange(-nrows)
 popular.stations
-
-
-
-################################################################################
-## Quick EDA
-################################################################################
-
-
-weather.all$tavg2 <- ifelse(is.na(weather.all$TAVG)
-                            ,(weather.all$TMIN + weather.all$TMAX)/2
-                            ,weather.all$TAVG)
-
-weather.wide <- weather.all %>% 
-  dplyr::select(-ends_with('ATTRIBUTES')) %>%
-  group_by(STATION,date) %>%
-  dplyr::select(c(starts_with('t'),starts_with('prcp'))) %>%
-  gather(variable,value,-c(STATION,date)) %>%
-  unite(station.variable, STATION, variable) %>%
-  spread(station.variable,value)
-
-
-# kdepairs(weather.wide[rowSums(weather.wide,is.na) == 0,-c(1)])
-
-# weather.wide %>% ungroup() %>% dplyr::select(contains("tavg2")) %>%
-#   # .[., colSums(. != 0) > 0] %>%
-#   select(which(!colSums(., na.rm=TRUE) %in% 0))
-#   dplyr::select(colSums(is.na(.) == 0)) %>%
-#   # filter(rowSums(is.na(.)) == 0) %>% 
-#   kdepairs()
-
-getwd()
-setwd(paste("D:","ajc188","github","capstone_project","data","raw",sep='\\'))
-getwd() 
-
-weather_wide <- weather.wide %>%
-  setNames(tolower(gsub(" ","_",names(.))) )
-
-
-save(weather_wide, file="weather_wide.RData", compress = FALSE)
-write.csv(weather_wide, 'weather_wide.csv',row.names = FALSE)
 
 
 
