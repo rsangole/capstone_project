@@ -12,7 +12,7 @@ partition "Data Preparation" {
  - Chicago City Zoning Data
  - Socio-Economic Status Data]
 #cbf2d0:Remove Duplicates
-Impute missing values
+Impute Missing Values
 Data Quality Checks]
 }
 partition "Feature\nEngineering" {
@@ -22,8 +22,9 @@ partition "Feature\nEngineering" {
  - Lagged Weather Features
  - Weight Of Evidence Features]
 #cbf2d0:Add dummy variables for categorical
-features with < 30 levels]
-#cbf2d0:Optionally: scale & center variables
+features with < 30 levels
+
+//Optionally//: Scale & Center Variables, 
 Add Principal Components]
 }
 partition Modeling {
@@ -35,14 +36,14 @@ split
 
 Reduce variables by filtering
 or variable selection procedures]
-:Apply 
+#cbf2d0:Apply 
 - Linear regression
 - Ridge regression
 - LASSO regression
 - Random Forest
 - XG Boost
 - Deep Learning Models]
-#cbf2d0:Evalaute performance using
+#cbf2d0:Evaluate performance using
 **RMSE and MAE**]
 :Investigate hyperparameter tuning,
 threshold selection, and 
@@ -74,9 +75,9 @@ class re-balance strategies;
 
 split end
 #c1e3ff://Strech Goal// : Perform ensemble models
-over both regr & class models|
+over both regr & class models]
 #c1e3ff:Feed output of regression model
 into classification model to predict
-location & presence of WNV in Chicago|
+location & presence of WNV in Chicago]
 }
 @enduml
