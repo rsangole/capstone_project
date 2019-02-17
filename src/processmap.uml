@@ -29,19 +29,32 @@ Add Principal Components]
 partition Modeling {
 #cbf2d0:Split dataset into train, validation & test]
 split 
-:**Regression:**
-**Predict No of Mosquitos**;
-#cbf2d0:Determine variable importance]
-#cbf2d0:Reduce variables by filtering
+:**Regression**
+**Predict No of Mosquitos**}
+#cbf2d0:Determine variable importance
+
+Reduce variables by filtering
 or variable selection procedures]
 :Apply 
-- list regression models here]
-:MORE TASKS??]
+- Linear regression
+- Ridge regression
+- LASSO regression
+- Random Forest
+- XG Boost
+- Deep Learning Models]
+#cbf2d0:Evalaute performance using
+**RMSE and MAE**]
+:Investigate hyperparameter tuning,
+threshold selection, and 
+class re-balance strategies;
+:Select best learner, tuning parameter 
+& model setup]
 split again
-:**Classification:**
-**Predict Presence of WNV**;
-#cbf2d0:Determine variable importance]
-#cbf2d0:Reduce variables by filtering
+:**Classification**
+**Predict Presence of WNV**}
+#cbf2d0:Determine variable importance
+
+Reduce variables by filtering
 or variable selection procedures]
 #cbf2d0:Apply these learners:
  - Logistic Regression
