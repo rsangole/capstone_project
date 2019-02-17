@@ -1,0 +1,12 @@
+@startuml
+scale max 1200 height
+skinparam activity {
+ BorderColor DarkSlateGray
+}
+skinparam ArrowColor DarkSlateGray
+#cbf2d0:Complete]
+detach
+:In Progress]
+detach
+#c1e3ff:Planned]
+@enduml
