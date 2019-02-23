@@ -155,7 +155,7 @@ proc sort data = &&&tract&yr2._&i.; by GEOID; run;
 data work.tract_&yr.;
 	merge 
 %do i = 1 %to &numSeq.;
-&&&tract&yr2._&i. (drop = FILEID FILETYPE STUSAB CHARITER SEQUENCE
+&&&tract&yr2._&i. 
 %end;
 	;
 	by GEOID; 
