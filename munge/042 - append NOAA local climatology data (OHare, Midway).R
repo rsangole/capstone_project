@@ -335,8 +335,12 @@ still.missing <- chi_daily_wide_imp[rowSums(is.na(chi_daily_wide_imp))>0,]
 # Must be some explanation during imputation, but it's probably not important.
 # Let's just drop these variables.
 
-chi_daily_wide_imp <- chi_daily_wide_imp %>% dplyr::select(-c(wea_midway_sunrise,wea_midway_sunset))
+chi_daily_wide_imp <- chi_daily_wide_imp %>% 
+  dplyr::select(-c(wea_midway_sunrise,wea_midway_sunset)) 
 
+chi_daily_wide_imp <- chi_daily_wide_imp %>% 
+  mutate(wea_ohare_sunrise = floor(wea_ohare_sunrise/100) + (wea_ohare_sunrise %% 100)/60
+         ,wea_ohare_sunset = floor(wea_ohare_sunset/100) + (wea_ohare_sunset %% 100)/60)
 
 save(daily_wide2_imp0
      ,file=paste(weather.path,"daily_wide2_imp0.RData",sep='\\')
@@ -383,10 +387,45 @@ chi_daily_wide_imp %>%
   ggplot(aes(x=value,group=attribute),ggtheme = "fresh") +  
   geom_histogram() + 
   facet_wrap(~attribute,ncol=5, scales = "free") +
-  ggtitle('NOAA OHare local climatological data') 
+  ggtitle('NOAA OHare local climatological data - histograms') 
+ggsave(paste(plot.path,"OHare_LCD_hist_imp.png",sep='\\'),width=10,height=8)
+
+chi_daily_wide_imp %>% 
+  dplyr::select(matches('midway|t_date')) %>% 
+  setNames(gsub('wea_midway_','',names(.))) %>% 
+  gather(.,attribute, value, -t_date) %>% 
+  ggplot(aes(x=value,group=attribute),ggtheme = "fresh") +  
+  geom_histogram() + 
+  facet_wrap(~attribute,ncol=5, scales = "free") +
+  ggtitle('NOAA Midway local climatological data - histograms') 
+ggsave(paste(plot.path,"Midway_LCD_hist_imp.png",sep='\\'),width=10,height=8)
 
 # Should rescale sunrise/sunset.  Should think about which of these terms
 # work.
+
+chi_daily_wide_imp %>% 
+  dplyr::select(matches('ohare|t_date')) %>% 
+  dplyr::filter(lubridate::year(t_date) >= 2007 & lubridate::year(t_date) <= 2016) %>%
+  setNames(gsub('wea_ohare_','',names(.))) %>% 
+  gather(.,attribute, value, -t_date) %>% 
+  ggplot(aes(x=t_date,y=value,group=attribute),ggtheme = "fresh") +  
+  geom_line() + 
+  scale_x_date(labels = date_format("%Y"),date_breaks = "1 years", date_labels = "%y") + 
+  facet_wrap(~attribute,ncol=5, scales = "free") +
+  ggtitle('NOAA OHare local climatological data - time series') 
+ggsave(paste(plot.path,"OHare_LCD_imp_timeseries.png",sep='\\'),width=10,height=8)
+
+chi_daily_wide_imp %>% 
+  dplyr::select(matches('midway|t_date')) %>% 
+  dplyr::filter(lubridate::year(t_date) >= 2007 & lubridate::year(t_date) <= 2016) %>%
+  setNames(gsub('wea_midway_','',names(.))) %>% 
+  gather(.,attribute, value, -t_date) %>% 
+  ggplot(aes(x=t_date,y=value,group=attribute),ggtheme = "fresh") +  
+  geom_line() + 
+  scale_x_date(labels = date_format("%Y"),date_breaks = "1 years", date_labels = "%y") + 
+  facet_wrap(~attribute,ncol=5, scales = "free") +
+  ggtitle('NOAA Midway local climatological data - time series') 
+ggsave(paste(plot.path,"Midway_LCD_imp_timeseries.png",sep='\\'),width=10,height=8)
 
 
 
