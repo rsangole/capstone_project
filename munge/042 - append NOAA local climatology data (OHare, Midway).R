@@ -518,6 +518,21 @@ ggsave(paste(plot.path,"LCD_imp_corr_with_pca.png",sep='\\'),width=16,height=12)
 
 
 
+chi_daily_wide_imp %>% dplyr::select(-t_date) %>%
+  # filter(rowSums(is.na(.)) == 0) %>% 
+  setNames(gsub('wea_','',names(.))) %>%
+  cor() %>%
+  ggcorrplot::ggcorrplot(hc.order = TRUE, type = "lower",
+                         lab = TRUE,ggtheme = "fresh",lab_size = 3,digits=2
+                         # ,hc.order =TRUE
+                         # ,tl.srt=0
+  ) +
+  ggtitle('NOAA local climatological data') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(paste(plot.path,"LCD_corr_imp.png",sep='\\'),width=14,height=14)
+
+
 
 
 ################################################################################
