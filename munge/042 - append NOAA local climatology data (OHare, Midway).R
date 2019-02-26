@@ -366,7 +366,8 @@ chi_daily_wide_imp %>% dplyr::select(matches('ohare')) %>%
                          lab = TRUE,ggtheme = "fresh",lab_size = 3,digits=3
                          # ,tl.srt=0
                          ) +
-  ggtitle('NOAA OHare local climatological data') 
+  ggtitle('NOAA OHare local climatological data') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ggsave(paste(plot.path,"OHare_LCD_corr_imp.png",sep='\\'),width=10,height=8)
 
 chi_daily_wide_imp %>% dplyr::select(matches('midway')) %>%
@@ -375,7 +376,8 @@ chi_daily_wide_imp %>% dplyr::select(matches('midway')) %>%
   cor() %>%
   ggcorrplot::ggcorrplot(hc.order = TRUE, type = "lower",
                          lab = TRUE,ggtheme = "fresh",lab_size = 3,digits=3) +
-  ggtitle('NOAA Midway local climatological data') 
+  ggtitle('NOAA Midway local climatological data') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ggsave(paste(plot.path,"Midway_LCD_corr_imp.png",sep='\\'),width=10,height=8)
 
 
@@ -388,7 +390,7 @@ chi_daily_wide_imp %>%
   geom_histogram() + 
   facet_wrap(~attribute,ncol=5, scales = "free") +
   ggtitle('NOAA OHare local climatological data - histograms') 
-ggsave(paste(plot.path,"OHare_LCD_hist_imp.png",sep='\\'),width=10,height=8)
+ggsave(paste(plot.path,"OHare_LCD_hist_imp.png",sep='\\'),width=12,height=8)
 
 chi_daily_wide_imp %>% 
   dplyr::select(matches('midway|t_date')) %>% 
@@ -398,7 +400,7 @@ chi_daily_wide_imp %>%
   geom_histogram() + 
   facet_wrap(~attribute,ncol=5, scales = "free") +
   ggtitle('NOAA Midway local climatological data - histograms') 
-ggsave(paste(plot.path,"Midway_LCD_hist_imp.png",sep='\\'),width=10,height=8)
+ggsave(paste(plot.path,"Midway_LCD_hist_imp.png",sep='\\'),width=12,height=8)
 
 # Should rescale sunrise/sunset.  Should think about which of these terms
 # work.
@@ -413,7 +415,7 @@ chi_daily_wide_imp %>%
   scale_x_date(labels = date_format("%Y"),date_breaks = "1 years", date_labels = "%y") + 
   facet_wrap(~attribute,ncol=5, scales = "free") +
   ggtitle('NOAA OHare local climatological data - time series') 
-ggsave(paste(plot.path,"OHare_LCD_imp_timeseries.png",sep='\\'),width=10,height=8)
+ggsave(paste(plot.path,"OHare_LCD_imp_timeseries.png",sep='\\'),width=12,height=8)
 
 chi_daily_wide_imp %>% 
   dplyr::select(matches('midway|t_date')) %>% 
@@ -425,7 +427,7 @@ chi_daily_wide_imp %>%
   scale_x_date(labels = date_format("%Y"),date_breaks = "1 years", date_labels = "%y") + 
   facet_wrap(~attribute,ncol=5, scales = "free") +
   ggtitle('NOAA Midway local climatological data - time series') 
-ggsave(paste(plot.path,"Midway_LCD_imp_timeseries.png",sep='\\'),width=10,height=8)
+ggsave(paste(plot.path,"Midway_LCD_imp_timeseries.png",sep='\\'),width=12,height=8)
 
 
 
@@ -464,11 +466,68 @@ save(chi_daily_wide_imp_pca
 # confusing to work with moving averages and lag terms, but we certainly could.
 
 
+chi_daily_wide_imp_pca2 <- chi_daily_wide_imp %>%
+  inner_join(chi_daily_wide_imp_pca)
+
+chi_daily_wide_imp_pca2 %>% dplyr::select(matches('ohare|PC')) %>%
+  setNames(gsub('wea_ohare_','',names(.))) %>%
+  cor() %>%
+  as.data.frame() %>%
+  .[colnames(chi_daily_wide_imp[,-1] %>% dplyr::select(matches('ohare|PC'))
+             %>% setNames(gsub('wea_ohare_','',names(.))))
+    ,colnames(chi_daily_wide_imp_pca[,-1])] %>%
+  mutate(raw = rownames(.)) %>%
+  # dplyr::select(colnames(chi_daily_wide_imp_pca[,-1])) %>%
+  gather(.,pc, corr, -raw) %>% 
+  ggplot(aes(raw, pc)) + 
+  geom_tile(aes(fill = corr), colour = "white") + 
+  geom_text(aes(label=sprintf("%0.2f", round(corr, digits = 2)),alpha=abs(corr))
+            ,size=3, show_legend = F) +
+  # scale_color_gradient(low="blue", high="red", mid="white") +  
+  # scale_colour_distiller(palette="BlGrWh") + 
+  scale_fill_gradient2(low="blue", high="red", mid="white", midpoint = 0) +  
+  xlim(as.character(as.factor(colnames(chi_daily_wide_imp[,-1] %>% dplyr::select(matches('ohare|PC')) %>% setNames(gsub('wea_ohare_','',names(.)))) ) )) +
+  ylim(as.character(rev(as.factor(colnames(chi_daily_wide_imp_pca[,-1]))))) +
+  theme(axis.title.x  = element_blank(),axis.title.y = element_blank()
+        ,axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle('NOAA OHare local climatological data - correlations between raw and PCA') 
+
+ggsave(paste(plot.path,"OHare_LCD_imp_corr_with_pca.png",sep='\\'),width=12,height=8)
+
+
+chi_daily_wide_imp_pca2 %>% dplyr::select(matches('midway|ohare|PC')) %>%
+  cor() %>%
+  as.data.frame() %>%
+  .[colnames(chi_daily_wide_imp[,-1] %>% dplyr::select(matches('midway|ohare|PC')))
+    ,colnames(chi_daily_wide_imp_pca[,-1])] %>%
+  mutate(raw = rownames(.)) %>%
+  gather(.,pc, corr, -raw) %>% 
+  ggplot(aes(raw, pc)) + 
+  geom_tile(aes(fill = corr), colour = "white") + 
+  geom_text(aes(label=sprintf("%0.2f", round(corr, digits = 2)),alpha=abs(corr))
+            ,size=3, show_guide = F) +
+  scale_fill_gradient2(low="blue", high="red", mid="white", midpoint = 0) +  
+  xlim(c(as.character(as.factor(colnames(chi_daily_wide_imp[,-1] %>% dplyr::select(matches('ohare|PC')))))),
+       as.character(as.factor(colnames(chi_daily_wide_imp[,-1] %>% dplyr::select(matches('midway|PC')) )))) +
+  ylim(as.character(rev(as.factor(colnames(chi_daily_wide_imp_pca[,-1]))))) +
+  theme(axis.title.x  = element_blank(),axis.title.y = element_blank()
+        ,axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle('NOAA local climatological data - correlations between raw and PCA') 
+ggsave(paste(plot.path,"LCD_imp_corr_with_pca.png",sep='\\'),width=16,height=12)
+
+
+
+
+
+
 ################################################################################
 ## Create moving averages and sums
 ## In this case, make some subjective decisions about which vars to drop.
 
-
+## Probably change my approach.  Calculate 7-day moving average for key 
+## variables (or PCA results from groups of related variables). 
+## Then create lag terms for moving average (0 weeks, 1, 2, 3, ..., 12 weeks
+## maybe out to 16 weeks).  This could result in 16xTBD variables.  
 
 
 
