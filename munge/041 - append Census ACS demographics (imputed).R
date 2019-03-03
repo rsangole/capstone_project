@@ -16,20 +16,23 @@ demo.tract <- read.csv(paste(src.path,"Demographics_tract.csv",sep="\\"),strings
 ################################################################################
 ## Bring in Census ACS demographics
 
-df_results <- df_results2 %>% 
+# colnames(df_results)
+# colnames(df_results2)
+
+df_results <- df_results %>% 
   left_join(.
             ,demo.blkgrp %>% 
               filter(year==2017) %>%
               setNames(paste("demo_blkgrp",names(.),'2017',sep="_")) %>%
-              mutate(loc_census_block_group_id = as.numeric(gsub("15000US",'',demo_blkgrp_GEOID))) %>%
-              dplyr::select(-c(demo_blkgrp_SUMLEVEL,demo_blkgrp_FILETYPE,demo_blkgrp_GEOID))
+              mutate(loc_census_block_group_id = as.numeric(gsub("15000US",'',demo_blkgrp_GEOID_2017))) %>%
+              dplyr::select(-c(demo_blkgrp_SUMLEVEL_2017,demo_blkgrp_FILETYPE_2017,demo_blkgrp_GEOID_2017))
             ,by=c("loc_census_block_group_id")) %>%
   left_join(.
             ,demo.tract %>% 
               filter(year==2017) %>%
               setNames(paste("demo_tract",names(.),'2017',sep="_")) %>%
-              mutate(loc_census_tract_id = as.numeric(gsub("14000US",'',demo_tract_GEOID))) %>%
-              dplyr::select(-c(demo_tract_SUMLEVEL,demo_tract_FILETYPE,demo_tract_GEOID))
+              mutate(loc_census_tract_id = as.numeric(gsub("14000US",'',demo_tract_GEOID_2017))) %>%
+              dplyr::select(-c(demo_tract_SUMLEVEL_2017,demo_tract_FILETYPE_2017,demo_tract_GEOID_2017))
             ,by=c("loc_census_tract_id")) 
 
 summary(df_results %>% dplyr::select(contains('demo_blkgrp')))
