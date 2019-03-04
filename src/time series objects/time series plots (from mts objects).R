@@ -154,6 +154,9 @@ ts.plots <- sapply(1:ceiling(dim(community_wkly_ts)[2]/10),function(x) {
 
 
 
+
+
+
 ################################################################################
 ## Impute missing data
 
@@ -248,6 +251,64 @@ community_wkly_ts_imp[,1] %>% stl(t.window=12, s.window="periodic"
 
 
 
+
+################################################################################
+## Create citywide weekly version of community data without imputation
+
+
+df_train$mos_any_wnv_present
+as.numeric(df_train$mos_any_wnv_present)
+mean(df_train$mos_any_wnv_present)
+
+city_wkly_long <- df_train %>% group_by(t_eval_wk) %>% 
+  summarise(
+    n_rows = n()
+    ,n_obs = sum(!is.na(mos_any_wnv_present))
+    ,mos_max_tot_num_mosquitos = max(mos_tot_num_mosquitos) 
+    ,mos_mean_tot_num_mosquitos = mean(mos_tot_num_mosquitos)  
+    ,any_mos_any_wnv_present = max(mos_any_wnv_present) 
+    ,sum_mos_any_wnv_present = sum(mos_any_wnv_present)
+    ,mean_mos_mean_wnv_present = mean(mos_any_wnv_present)
+  )
+
+city_wkly_long2 <- left_join(eval_wks %>% filter(t_train)
+                             ,city_wkly_long
+                             ,by=("t_eval_wk")) %>%
+  mutate(t_eval_wk = as.integer(t_eval_wk)) %>% 
+  dplyr::select(-c(t_mo,t_wk_end)) 
+
+# ftable(city_wkly_wide2$t_yr)
+
+
+city_wkly_ts <- ts(city_wkly_long2 %>% dplyr::select(-(1:6))
+                   # ,start=as.Date('2006-01-01')
+                   ,frequency=52
+)
+plot(city_wkly_ts)
+plot(city_wkly_long2$mos_mean_tot_num_mosquitos,
+     city_wkly_long2$mean_mos_mean_wnv_present)
+
+# Plot ts (10 at a time which is the limit for multiple time series plots)
+ts.plots <- sapply(1:ceiling(dim(city_wkly_ts)[2]/10),function(x) {
+  ts <- city_wkly_ts[,
+                     ((x-1)*10+1):
+                       min(((x-1)*10+10),dim(city_wkly_ts)[2])
+                     ]
+  batch.name = paste('city-level Weekly Time Series, batch ',x,'.png',sep='')
+  png(paste(plot.path,batch.name,sep='\\'))
+  plot(ts)
+  dev.off()
+})
+
+
+
+# png(paste(plot.path,'test.png',sep='\\'))
+# plot(city_wkly_ts[,1:10])
+# plot(city_wkly_ts[,1:10],title='city-level Weekly Time Series')
+# ts.plot(city_wkly_ts)
+# dev.off()
+# 
+# ts.plot(city_wkly_ts[,1:10])
 
 
 

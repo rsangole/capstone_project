@@ -69,6 +69,21 @@ require("scales")
 require("stringr")
 
 
+# https://github.com/cttobin/ggthemr
+
+
+# install.packages("ggthemr")
+# install.packages("https://github.com/cttobin/ggthemr")
+# install.packages("devtools"); require("devtools")
+devtools::install_github("cttobin/ggthemr")
+require("ggthemr")
+
+
+install.packages("janitor")
+# require("janitor")
+
+
+
 ################################################################################
 ## Functions
 ################################################################################

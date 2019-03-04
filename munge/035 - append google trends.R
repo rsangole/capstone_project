@@ -81,6 +81,8 @@ df_rev <- left_join(df_rev
 
 # summary(df_rev %>% dplyr::select(matches('goog')))
 
+# kdepairs(df_rev %>% dplyr::select(matches('goog')))
+
 
 ################################################################################
 ## Save data
