@@ -1,5 +1,7 @@
 # Predict 498 Capstone Project
 
+* **Final Team Paper** : [Link](https://github.com/rsangole/capstone_project/blob/master/reports/West%20Nile%20Final%20Paper%20(team%2054).pdf)
+
 ## Repository Details
 
 * **data** : Holds all the raw and post processed datasets to be used for visualization, modeling and dashboarding. `raw` holds the original raw datasets, `processed` holds the post processed datasets which go into modeling, EDA and dashboarding.
