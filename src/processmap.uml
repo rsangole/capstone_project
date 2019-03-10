@@ -14,29 +14,26 @@ partition "Data Preparation" {
 #cbf2d0:Remove Duplicates
 Impute Missing Values
 Data Quality Checks]
-}
-partition "Feature\nEngineering" {
-#cbf2d0:Add: 
+
+#cbf2d0:Add:
  - Temporal Features
  - Geospatial Features
  - Lagged Weather Features
- - Weight Of Evidence Features]
-#cbf2d0:Add dummy variables for categorical
-features with < 30 levels
-
-//Optionally//: Scale & Center Variables, 
-Add Principal Components]
+ - Weight Of Evidence Features
+ - Add dummy variables for categorical
+features with < 30 levels]
 }
+
 partition Modeling {
 #cbf2d0:Split dataset into train, validation & test]
-split 
+split
 :**Regression**
 **Predict No of Mosquitos**}
 #cbf2d0:Determine variable importance
 
 Reduce variables by filtering
 or variable selection procedures]
-#cbf2d0:Apply 
+#cbf2d0:Apply
 - Linear regression
 - Ridge regression
 - LASSO regression
@@ -45,13 +42,13 @@ or variable selection procedures]
 - Deep Learning Models]
 #cbf2d0:Evaluate performance using
 **RMSE and MAE**]
-:Investigate hyperparameter tuning,
-threshold selection, and 
+#cbf2d0:Investigate hyperparameter tuning,
+threshold selection, and
 class re-balance strategies;
-:Select best learner, tuning parameter 
+#cbf2d0:Select best learner, tuning parameter
 & model setup]
 split again
-:**Classification**
+#cbf2d0:**Classification**
 **Predict Presence of WNV**}
 #cbf2d0:Determine variable importance
 
@@ -67,15 +64,14 @@ or variable selection procedures]
  - Extra Trees]
 #cbf2d0:Evalaute performance using
 **kappa, TPR, FPR** and **AUC ROC**]
-:Investigate hyperparameter tuning,
-threshold selection, and 
+#cbf2d0:Investigate hyperparameter tuning,
+threshold selection, and
 class re-balance strategies;
-:Select best learner, tuning parameter 
+#cbf2d0:Select best learner, tuning parameter
 & model setup]
 
 split end
-#c1e3ff://Strech Goal// : Perform ensemble models
-over both regr & class models]
+
 #c1e3ff:Feed output of regression model
 into classification model to predict
 location & presence of WNV in Chicago]
