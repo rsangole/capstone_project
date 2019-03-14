@@ -1,6 +1,7 @@
 # Predict 498 Capstone Project
 
 * **Final Team Paper** : [Link](https://github.com/rsangole/capstone_project/blob/master/reports/West%20Nile%20Final%20Paper%20(team%2054).pdf)
+* **Team Presentation** : [Link](https://www.youtube.com/watch?v=Gl2StkLlVqU)
 
 ## Repository Details
 
